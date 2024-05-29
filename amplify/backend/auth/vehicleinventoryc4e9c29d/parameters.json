@@ -1,0 +1,25 @@
+{
+  "authSelections": "identityPoolAndUserPool",
+  "resourceName": "vehicleinventoryc4e9c29d",
+  "serviceType": "imported",
+  "region": "us-east-1",
+  "aliasAttributes": [
+    "email",
+    "preferred_username"
+  ],
+  "requiredAttributes": [
+    "email",
+    "given_name"
+  ],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [
+    "Requires Lowercase",
+    "Requires Uppercase",
+    "Requires Numbers",
+    "Requires Symbols"
+  ],
+  "mfaConfiguration": "OPTIONAL",
+  "mfaTypes": [
+    "TOTP"
+  ]
+}

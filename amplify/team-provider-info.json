@@ -1,0 +1,32 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-vehicleinventory-dev-9803e-authRole",
+      "UnauthRoleArn": "arn:aws:iam::730335603064:role/amplify-vehicleinventory-dev-9803e-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::730335603064:role/amplify-vehicleinventory-dev-9803e-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-vehicleinventory-dev-9803e-deployment",
+      "UnauthRoleName": "amplify-vehicleinventory-dev-9803e-unauthRole",
+      "StackName": "amplify-vehicleinventory-dev-9803e",
+      "StackId": "arn:aws:cloudformation:us-east-1:730335603064:stack/amplify-vehicleinventory-dev-9803e/363a1340-1db0-11ef-954e-0ef9b9f3e029",
+      "AmplifyAppId": "d2xd22b4ky9ifs"
+    },
+    "categories": {
+      "auth": {
+        "vehicleinventoryc4e9c29d": {
+          "userPoolId": "us-east-1_llgbyVWuU",
+          "userPoolName": "VehicleInventoryUserPool",
+          "webClientId": "5bl96o1jqt3fnnd5vgndvapfsf",
+          "nativeClientId": "6u0h20h6ntrhql28hfr4i6g4qm",
+          "identityPoolId": "us-east-1:33d81909-f98f-404a-be45-1c3b7ef32301",
+          "identityPoolName": "AuthenticatedInventoryUsers",
+          "allowUnauthenticatedIdentities": true,
+          "authRoleArn": "arn:aws:iam::730335603064:role/service-role/AuthenticatedInventoryUsers",
+          "authRoleName": "AuthenticatedInventoryUsers",
+          "unauthRoleArn": "arn:aws:iam::730335603064:role/service-role/unAuthenticatedUser",
+          "unauthRoleName": "unAuthenticatedUser"
+        }
+      }
+    }
+  }
+}

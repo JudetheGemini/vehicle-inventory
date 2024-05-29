@@ -1,0 +1,101 @@
+{
+  "auth": {
+    "vehicleinventoryc4e9c29d": {
+      "customAuth": false,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_allowUnauthenticatedIdentities": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_authRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_authRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_identityPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_identityPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_unauthRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_unauthRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    },
+    "AMPLIFY_auth_vehicleinventoryc4e9c29d_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "vehicleinventoryc4e9c29d"
+        }
+      ]
+    }
+  }
+}
