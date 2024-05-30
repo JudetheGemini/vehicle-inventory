@@ -3,7 +3,7 @@ import { withAuthenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from "next/navigation";
 import { getCurrentUser } from "aws-amplify/auth";
 
-function Dashboard() {
+export default function Dashboard() {
   const router = useRouter(); // for client-side navigation
   const { user, signOut } = useAuthenticator((context) => [context.user]);
 
@@ -20,5 +20,3 @@ function Dashboard() {
     </div>
   );
 }
-
-export default withAuthenticator(Dashboard);

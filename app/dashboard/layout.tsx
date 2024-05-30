@@ -1,14 +1,14 @@
 "use client";
 import "@mantine/core/styles.css";
-import { AppShell, Burger } from "@mantine/core";
+import { AppShell, Burger, Button } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import Image from "next/image";
+import Link from "next/link";
+import logo from "../../public/logo.svg";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
 
   return (
@@ -22,14 +22,23 @@ export default function DashboardLayout({
         }}
         padding="md"
       >
-        <AppShell.Header>
+        <AppShell.Header className="flex flex-row justify-between items-center px-12">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <span>Logo</span>
+          <Link href="/">
+            {" "}
+            <Image src={logo} alt="logo" />
+          </Link>
         </AppShell.Header>
 
-        <AppShell.Navbar p="md">Navbar</AppShell.Navbar>
+        <AppShell.Navbar p="md">
+          <Button variant="filled" fullWidth>
+            Logout
+          </Button>
+        </AppShell.Navbar>
         <AppShell.Main>{children}</AppShell.Main>
       </AppShell>
     </MantineProvider>
   );
 }
+
+export default withAuthenticator(DashboardLayout);
