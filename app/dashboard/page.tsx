@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { getCurrentUser } from "aws-amplify/auth";
 
 function Dashboard() {
-  const router = useRouter();
+  const router = useRouter(); // for client-side navigation
   const { user, signOut } = useAuthenticator((context) => [context.user]);
 
   const handleLogout = () => {
