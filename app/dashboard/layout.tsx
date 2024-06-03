@@ -7,6 +7,7 @@ import {
   TextInput,
   Flex,
   Avatar,
+  Badge,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
@@ -37,7 +38,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
         }}
         padding="md"
       >
-        <AppShell.Header className="content-around">
+        <AppShell.Header className="content-around p-4">
           <div className="max-w-screen-xl mx-auto  flex flex-row justify-between items-center">
             <Burger
               opened={opened}
@@ -50,10 +51,9 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
               <Image src={logo} alt="logo" />
             </Link>
             <Flex gap="10">
-              <TextInput placeholder="Search" />
-              <Avatar color="cyan" radius="xl">
-                OJ
-              </Avatar>
+              <Badge color="teal" radius="xs">
+                {user?.username}
+              </Badge>
             </Flex>
           </div>
         </AppShell.Header>
@@ -65,11 +65,8 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
           p="sm"
         >
           <Flex mt={20} gap={10} align="flex-start" direction="column">
-            <Button
-              variant="transparent"
-              c="dark"
-              className="border border-white"
-            >
+            <TextInput placeholder="Search" />
+            <Button variant="transparent" c="dark">
               Vehicle Management
             </Button>
             <Button variant="transparent" c="dark">
