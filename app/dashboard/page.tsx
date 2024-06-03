@@ -1,7 +1,7 @@
 "use client";
-import { withAuthenticator, useAuthenticator } from "@aws-amplify/ui-react";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from "next/navigation";
-import { getCurrentUser } from "aws-amplify/auth";
+
 import { Grid, Card, Text, Divider, Flex, Button, Modal } from "@mantine/core";
 
 export default function Dashboard() {
