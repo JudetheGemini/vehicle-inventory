@@ -59,13 +59,13 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
         </AppShell.Header>
 
         <AppShell.Navbar
-          className="flex justify-between items-center"
+          className="flex gap-10 md:justify-between md:items-center"
           pb="lg"
           pt="lg"
           p="sm"
         >
           <Flex mt={20} gap={10} align="flex-start" direction="column">
-            <TextInput placeholder="Search" />
+            <TextInput ml="md" className="w-max" placeholder="Search" />
             <Button variant="transparent" c="dark">
               Vehicle Management
             </Button>
