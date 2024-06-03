@@ -1,6 +1,7 @@
 "use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { withAuthenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import "./globals.css";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
