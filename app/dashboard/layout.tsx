@@ -6,6 +6,7 @@ import {
   Button,
   TextInput,
   Flex,
+  NavLink,
   Menu,
   Divider,
   Badge,
@@ -68,12 +69,12 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
         >
           <Flex
             mt={20}
-            gap={10}
+            gap={8}
             align="flex-start"
             direction="column"
             className="w-full"
           >
-            <Button
+            {/* <Button
               component={Link}
               onClick={toggle}
               href="/dashboard"
@@ -81,53 +82,34 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
               c="dark"
             >
               Dashboard
-            </Button>
-            <Menu position="bottom">
-              <Menu.Target>
-                <Button variant="transparent" c="dark">
-                  Vehicle Management
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item>
-                  {" "}
-                  <Button
-                    component={Link}
-                    onClick={toggle}
-                    href="/dashboard/vehicle"
-                    variant="transparent"
-                    c="dark"
-                  >
-                    Manage Vehicles
-                  </Button>
-                </Menu.Item>
-                <Menu.Item>
-                  {" "}
-                  <Button
-                    component={Link}
-                    onClick={toggle}
-                    href="/dashboard/inventory"
-                    variant="transparent"
-                    c="dark"
-                  >
-                    View Inventory
-                  </Button>
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-
-            <Button
-              component={Link}
-              onClick={toggle}
-              href="/dashboard/user"
-              variant="transparent"
-              c="dark"
+            </Button> */}
+            <NavLink href="/dashboard" fw={500} label="Dashboard"></NavLink>
+            <NavLink
+              href="#"
+              fw={500}
+              label="Vehicle Management"
+              childrenOffset={28}
             >
-              User Management
-            </Button>
-            <Button variant="transparent" c="dark">
-              Reports
-            </Button>
+              <NavLink
+                href="/dashboard/vehicle"
+                label="Manage Vehicles"
+              ></NavLink>
+              <NavLink
+                href="/dashboard/inventory"
+                label="View Inventory"
+              ></NavLink>
+            </NavLink>
+            <NavLink
+              href="/dashboard/user"
+              fw={500}
+              label="User Management"
+            ></NavLink>
+            <NavLink
+              onClick={toggle}
+              href="#"
+              fw={500}
+              label="Reports"
+            ></NavLink>
           </Flex>
           <Divider />
           <Flex
@@ -137,19 +119,17 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
             direction="column"
             className="w-full"
           >
-            <Button
-              variant="transparent"
-              c="dark"
-              className="border border-white"
-            >
-              Settings
-            </Button>
-            <Button variant="transparent" c="dark">
-              Help & Support
-            </Button>
-            <Button onClick={handleLogout} variant="transparent" c="dark">
-              Logout
-            </Button>
+            <NavLink
+              href="/dashboard/settings"
+              fw={500}
+              label="Settings"
+            ></NavLink>
+            <NavLink
+              href="/dashboard/support"
+              fw={500}
+              label="Help & Support"
+            ></NavLink>
+            <NavLink onClick={handleLogout} fw={500} label="Logout"></NavLink>
           </Flex>
         </AppShell.Navbar>
         <AppShell.Main>{children}</AppShell.Main>
