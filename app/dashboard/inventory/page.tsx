@@ -1,8 +1,9 @@
 "use client";
 import { generateClient } from "aws-amplify/api";
+import { Suspense } from "react";
 import { listVehicles } from "@/src/graphql/queries";
 import { useState, useEffect } from "react";
-import { Table } from "@mantine/core";
+import { Table, Skeleton } from "@mantine/core";
 import { type Vehicle } from "@/src/API";
 
 const client = generateClient();
@@ -28,6 +29,7 @@ export default function InventoryHome() {
   const rows = vehicles.map((vehicle) => (
     <Table.Tr key={vehicle.id}>
       <Table.Td>{vehicle.make}</Table.Td>
+
       <Table.Td>{vehicle.model}</Table.Td>
       <Table.Td>{vehicle.year}</Table.Td>
       <Table.Td>{vehicle.color}</Table.Td>
@@ -37,13 +39,6 @@ export default function InventoryHome() {
   return (
     <div>
       <h1>Inventory Home {vehicles.length} Vehicles</h1>
-      {/* {vehicles.map((vehicle, index) => (
-        <ul key={vehicle.id ? vehicle.id : index}>
-          <li>
-            <p>{vehicle.make}</p>
-          </li>
-        </ul>
-      ))} */}
       <Table>
         <Table.Thead>
           <Table.Tr>
@@ -53,7 +48,10 @@ export default function InventoryHome() {
             <Table.Th>Color</Table.Th>
           </Table.Tr>
         </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
+        <Suspense fallback={<Skeleton height={8} mt={6} />}>
+          {" "}
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Suspense>
       </Table>
     </div>
   );
