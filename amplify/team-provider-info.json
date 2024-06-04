@@ -26,6 +26,9 @@
           "unauthRoleArn": "arn:aws:iam::730335603064:role/service-role/unAuthenticatedUser",
           "unauthRoleName": "unAuthenticatedUser"
         }
+      },
+      "api": {
+        "vehicleinventory": {}
       }
     }
   }
