@@ -3,6 +3,7 @@ import { Tabs, rem, Loader } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
 import toast, { Toaster } from "react-hot-toast";
+import { pick } from "lodash";
 import {
   createVehicle,
   updateVehicle,
@@ -15,6 +16,7 @@ import {
   type DeleteVehicleInput,
   type Vehicle,
 } from "@/src/API";
+import _ from "lodash";
 
 // Initial state of the form to create new entry
 const initialState: CreateVehicleInput = {
@@ -23,8 +25,18 @@ const initialState: CreateVehicleInput = {
   year: 1999,
   color: "",
 };
+
+// Initial state of the form to create new entry
+const retrievedState: UpdateVehicleInput = {
+  id: "",
+  make: "",
+  model: "",
+  year: 1999,
+  color: "",
+};
 const client = generateClient();
 
+// Toast Notifier
 const notify = () =>
   toast.custom((t) => (
     <div
@@ -54,9 +66,12 @@ const notify = () =>
 
 export default function ManageVehicleHome() {
   const [isLoading, setIsLoading] = useState<Boolean>(false); // loading state for submissions
-  const [formState, setFormState] = useState<CreateVehicleInput>(initialState);
-  const [entry, setEntry] = useState<Vehicle[] | CreateVehicleInput[]>([]);
-  const [vehicleID, setVehicleID] = useState({ id: "" });
+  const [formState, setFormState] = useState<CreateVehicleInput>(initialState); // initial state for create form
+  const [entry, setEntry] = useState<Vehicle[] | CreateVehicleInput[]>([]); // state holding the vehicle data to be created
+  const [vehicleID, setVehicleID] = useState({ id: "" }); // state holding vehicle id for update and delete operations
+  const [retrievedData, setRetrievedData] = useState<any>({});
+  const [updateState, setUpdateState] =
+    useState<UpdateVehicleInput>(retrievedState);
 
   // function to create a new vehicle entry
   async function addVehicle() {
@@ -97,10 +112,48 @@ export default function ManageVehicleHome() {
         variables: { id: id },
       });
       const vehicle = vehicleData.data.getVehicle;
+      const selectedVehicleData = _.pick(vehicle, [
+        "id",
+        "make",
+        "model",
+        "year",
+        "color",
+      ]);
       console.log(vehicle);
+      setRetrievedData({ ...selectedVehicleData });
+      console.log(retrievedData);
       setIsLoading(false);
     } catch (error) {
       console.log("error fetching vehicles");
+    }
+  }
+
+  async function updateEntry() {
+    try {
+      setIsLoading(true);
+      Object.assign(retrievedState, retrievedData);
+
+      if (
+        !retrievedState.make &&
+        !retrievedState.year &&
+        !retrievedState.color &&
+        !retrievedState.model
+      ) {
+        setIsLoading(false);
+        toast.error("At least one entry is required");
+        return;
+      }
+
+      const data = { ...retrievedState };
+      await client.graphql({
+        query: updateVehicle,
+        variables: { input: data },
+      });
+      setFormState(initialState);
+      toast.success("Entry Successfully Updated");
+      setIsLoading(false);
+    } catch (error) {
+      console.log("Error creating entry", error);
     }
   }
 
@@ -196,6 +249,72 @@ export default function ManageVehicleHome() {
             {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
           </button>
         </div>
+        {retrievedData.id && (
+          <div className="flex flex-col gap-4 justify-center mt-6">
+            <label className="flex flex-col">
+              <span className="text-sm font-bold">Make</span>
+              <input
+                className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+                type="text"
+                value={retrievedData?.make}
+                onChange={(e) =>
+                  setRetrievedData({ ...retrievedData, make: e.target.value })
+                }
+                placeholder="(E.g Honda, Toyota)"
+              />
+            </label>
+
+            <label className="flex flex-col">
+              <span className="text-sm font-bold">Model</span>
+              <input
+                className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+                type="text"
+                onChange={(e) =>
+                  setRetrievedData({ ...retrievedData, model: e.target.value })
+                }
+                value={retrievedData?.model}
+                placeholder="(E.g Hilux, Camry)"
+              />
+            </label>
+            <label className="flex flex-col">
+              <span className="text-sm font-bold">Year</span>
+              <input
+                className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+                type="text"
+                onChange={(e) =>
+                  setRetrievedData({
+                    ...retrievedData,
+                    year: parseInt(e.target.value),
+                  })
+                }
+                readOnly={false}
+                value={retrievedData?.year}
+                placeholder="Year"
+              />
+            </label>
+            <label className="flex flex-col">
+              <span className="text-sm font-bold">Color</span>
+              <input
+                className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+                type="text"
+                onChange={(e) =>
+                  setRetrievedData({ ...retrievedData, color: e.target.value })
+                }
+                value={retrievedData?.color}
+                placeholder="Color"
+              />
+            </label>
+
+            <button
+              className="bg-teal-700 text-white flex justify-center items-center gap-3 rounded-sm p-2 max-w-32"
+              onClick={updateEntry}
+            >
+              Update Entry
+              {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
+            </button>
+            <Toaster position="top-right" />
+          </div>
+        )}
       </Tabs.Panel>
       <Tabs.Panel value="delete" pt={rem(10)}>
         Delete Entry
