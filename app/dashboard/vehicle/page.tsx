@@ -2,6 +2,7 @@
 import { Tabs, rem } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
+import toast, { Toaster } from "react-hot-toast";
 import {
   createVehicle,
   updateVehicle,
@@ -23,6 +24,33 @@ const initialState: CreateVehicleInput = {
 };
 const client = generateClient();
 
+const notify = () =>
+  toast.custom((t) => (
+    <div
+      className={`${
+        t.visible ? "animate-enter" : "animate-leave"
+      } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+    >
+      <div className="flex-1 w-0 p-4">
+        <div className="flex items-start">
+          <div className="ml-3 flex-1">
+            <p className="text-sm font-medium text-gray-900">
+              Vehicle Entry Created
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="flex border-l border-gray-200">
+        <button
+          onClick={() => toast.dismiss(t.id)}
+          className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  ));
+
 export default function ManageVehicleHome() {
   const [formState, setFormState] = useState<CreateVehicleInput>(initialState);
   const [entry, setEntry] = useState<Vehicle[] | CreateVehicleInput[]>([]);
@@ -39,11 +67,13 @@ export default function ManageVehicleHome() {
         return;
       const data = { ...formState };
       setEntry([...entry, data]);
-      setFormState(initialState);
+
       await client.graphql({
         query: createVehicle,
         variables: { input: data },
       });
+      setFormState(initialState);
+      notify();
     } catch (error) {
       console.log("Error creating entry", error);
     }
@@ -114,6 +144,7 @@ export default function ManageVehicleHome() {
           >
             Submit
           </button>
+          <Toaster position="top-right" />
         </div>
       </Tabs.Panel>
       <Tabs.Panel value="update" pt={rem(10)}>
