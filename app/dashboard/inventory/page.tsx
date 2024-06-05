@@ -28,8 +28,8 @@ export default function InventoryHome() {
 
   const rows = vehicles.map((vehicle) => (
     <Table.Tr key={vehicle.id}>
+      <Table.Td>{vehicle.id}</Table.Td>
       <Table.Td>{vehicle.make}</Table.Td>
-
       <Table.Td>{vehicle.model}</Table.Td>
       <Table.Td>{vehicle.year}</Table.Td>
       <Table.Td>{vehicle.color}</Table.Td>
@@ -37,11 +37,13 @@ export default function InventoryHome() {
   ));
 
   return (
-    <div>
-      <h1>Inventory Home {vehicles.length} Vehicles</h1>
-      <Table>
+    <div className="flex flex-col items-center py-6 px-4 md:px-6">
+      {/* <h1>Inventory Home {vehicles.length} Vehicles</h1> */}
+      <Table horizontalSpacing="sm" verticalSpacing="md" captionSide="top">
+        <Table.Caption>Inventory showing Vehicle Assets</Table.Caption>
         <Table.Thead>
           <Table.Tr>
+            <Table.Th>Vehicle ID</Table.Th>
             <Table.Th>Make</Table.Th>
             <Table.Th>Model</Table.Th>
             <Table.Th>Year</Table.Th>

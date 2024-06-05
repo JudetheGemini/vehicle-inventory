@@ -2,13 +2,23 @@
 import { Tabs, rem } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
-import { createVehicle } from "@/src/graphql/mutations";
-import { type CreateVehicleInput, type Vehicle } from "@/src/API";
+import {
+  createVehicle,
+  updateVehicle,
+  deleteVehicle,
+} from "@/src/graphql/mutations";
+import {
+  type CreateVehicleInput,
+  type UpdateVehicleInput,
+  type DeleteVehicleInput,
+  type Vehicle,
+} from "@/src/API";
 
+// Initial state of the form to create new entry
 const initialState: CreateVehicleInput = {
   make: "",
   model: "",
-  year: 0,
+  year: 1999,
   color: "",
 };
 const client = generateClient();
@@ -46,47 +56,64 @@ export default function ManageVehicleHome() {
         <Tabs.Tab value="delete">Delete Entry</Tabs.Tab>
       </Tabs.List>
 
-      <Tabs.Panel value="create" pt={rem(10)}>
-        Create Entry
+      <Tabs.Panel value="create" className="px-2 md:px-16" pt={rem(16)}>
         <div className="flex flex-col gap-4 justify-center">
-          <input
-            className="border border-gray-800 rounded-md text-lg"
-            type="text"
-            value={formState.make}
-            onChange={(e) =>
-              setFormState({ ...formState, make: e.target.value })
-            }
-            placeholder="Make"
-          />
+          <label className="flex flex-col">
+            <span className="text-sm font-bold">Make</span>
+            <input
+              className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+              type="text"
+              value={formState.make}
+              onChange={(e) =>
+                setFormState({ ...formState, make: e.target.value })
+              }
+              placeholder="(E.g Honda, Toyota)"
+            />
+          </label>
 
-          <input
-            className="border border-gray-800 rounded-md text-lg"
-            type="text"
-            onChange={(e) =>
-              setFormState({ ...formState, model: e.target.value })
-            }
-            value={formState.model}
-            placeholder="Model"
-          />
-          <input
-            className="border border-gray-800 rounded-md text-lg"
-            type="text"
-            onChange={(e) =>
-              setFormState({ ...formState, year: parseInt(e.target.value) })
-            }
-            value={formState.year}
-            placeholder="Year"
-          />
-          <input
-            className="border border-gray-800 rounded-md text-lg"
-            type="text"
-            onChange={(e) =>
-              setFormState({ ...formState, color: e.target.value })
-            }
-            value={formState.color}
-            placeholder="Color"
-          />
-          <button onClick={addVehicle}>Submit</button>
+          <label className="flex flex-col">
+            <span className="text-sm font-bold">Model</span>
+            <input
+              className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+              type="text"
+              onChange={(e) =>
+                setFormState({ ...formState, model: e.target.value })
+              }
+              value={formState.model}
+              placeholder="(E.g Hilux, Camry)"
+            />
+          </label>
+          <label className="flex flex-col">
+            <span className="text-sm font-bold">Year</span>
+            <input
+              className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+              type="text"
+              onChange={(e) =>
+                setFormState({ ...formState, year: parseInt(e.target.value) })
+              }
+              value={formState.year}
+              placeholder="Year"
+            />
+          </label>
+          <label className="flex flex-col">
+            <span className="text-sm font-bold">Color</span>
+            <input
+              className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+              type="text"
+              onChange={(e) =>
+                setFormState({ ...formState, color: e.target.value })
+              }
+              value={formState.color}
+              placeholder="Color"
+            />
+          </label>
+
+          <button
+            className="bg-teal-700 text-white rounded-sm p-2 max-w-32"
+            onClick={addVehicle}
+          >
+            Submit
+          </button>
         </div>
       </Tabs.Panel>
       <Tabs.Panel value="update" pt={rem(10)}>
