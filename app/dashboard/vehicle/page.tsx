@@ -1,5 +1,5 @@
 "use client";
-import { Tabs, rem } from "@mantine/core";
+import { Tabs, rem, Loader } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
 import toast, { Toaster } from "react-hot-toast";
@@ -8,6 +8,7 @@ import {
   updateVehicle,
   deleteVehicle,
 } from "@/src/graphql/mutations";
+import { getVehicle } from "@/src/graphql/queries";
 import {
   type CreateVehicleInput,
   type UpdateVehicleInput,
@@ -52,19 +53,26 @@ const notify = () =>
   ));
 
 export default function ManageVehicleHome() {
+  const [isLoading, setIsLoading] = useState<Boolean>(false); // loading state for submissions
   const [formState, setFormState] = useState<CreateVehicleInput>(initialState);
   const [entry, setEntry] = useState<Vehicle[] | CreateVehicleInput[]>([]);
+  const [vehicleID, setVehicleID] = useState({ id: "" });
 
   // function to create a new vehicle entry
   async function addVehicle() {
     try {
+      setIsLoading(true);
       if (
         !formState.make ||
         !formState.year ||
         !formState.color ||
         !formState.model
-      )
+      ) {
+        setIsLoading(false);
+        toast.error("Please fill in all fields");
         return;
+      }
+
       const data = { ...formState };
       setEntry([...entry, data]);
 
@@ -74,10 +82,28 @@ export default function ManageVehicleHome() {
       });
       setFormState(initialState);
       notify();
+      setIsLoading(false);
     } catch (error) {
       console.log("Error creating entry", error);
     }
   }
+
+  // function to fetch a single vehicle from its ID
+  async function fetchVehicle(id: string) {
+    try {
+      setIsLoading(true);
+      const vehicleData = await client.graphql({
+        query: getVehicle,
+        variables: { id: id },
+      });
+      const vehicle = vehicleData.data.getVehicle;
+      console.log(vehicle);
+      setIsLoading(false);
+    } catch (error) {
+      console.log("error fetching vehicles");
+    }
+  }
+
   return (
     <Tabs defaultValue="create" color="teal">
       <Tabs.List>
@@ -139,16 +165,37 @@ export default function ManageVehicleHome() {
           </label>
 
           <button
-            className="bg-teal-700 text-white rounded-sm p-2 max-w-32"
+            className="bg-teal-700 text-white flex justify-center items-center gap-3 rounded-sm p-2 max-w-32"
             onClick={addVehicle}
           >
             Submit
+            {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
           </button>
           <Toaster position="top-right" />
         </div>
       </Tabs.Panel>
       <Tabs.Panel value="update" pt={rem(10)}>
-        Update Entry
+        <div className="flex flex-col gap-4 justify-center">
+          <label className="flex flex-col">
+            <span className="text-sm font-bold">Enter Vehicle ID</span>
+            <input
+              className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+              type="text"
+              onChange={(e) =>
+                setVehicleID({ ...vehicleID, id: e.target.value })
+              }
+              placeholder="Vehicle ID"
+            />
+          </label>
+
+          <button
+            className="bg-teal-700 text-white flex justify-center items-center gap-3 rounded-sm p-2 max-w-32"
+            onClick={() => fetchVehicle(vehicleID?.id)}
+          >
+            Submit
+            {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
+          </button>
+        </div>
       </Tabs.Panel>
       <Tabs.Panel value="delete" pt={rem(10)}>
         Delete Entry
