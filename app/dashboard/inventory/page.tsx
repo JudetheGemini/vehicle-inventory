@@ -5,6 +5,7 @@ import { listVehicles } from "@/src/graphql/queries";
 import { useState, useEffect } from "react";
 import { Table, Skeleton } from "@mantine/core";
 import { type Vehicle } from "@/src/API";
+import Link from "next/link";
 
 const client = generateClient();
 export default function InventoryHome() {
@@ -41,6 +42,14 @@ export default function InventoryHome() {
       {/* <h1>Inventory Home {vehicles.length} Vehicles</h1> */}
       <Table horizontalSpacing="sm" verticalSpacing="md" captionSide="top">
         <Table.Caption>Inventory showing Vehicle Assets</Table.Caption>
+        <Table.Caption>
+          This table is read-only. To perform update or delete operations, copy
+          vehicle ID and please navigate to the{" "}
+          <Link href="/dashboard/vehicle" className="text-blue-600">
+            Manage Vehicles
+          </Link>{" "}
+          page
+        </Table.Caption>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Vehicle ID</Table.Th>

@@ -1,5 +1,5 @@
 "use client";
-import { Tabs, rem, Loader } from "@mantine/core";
+import { Tabs, rem, Loader, Paper, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
 import toast, { Toaster } from "react-hot-toast";
@@ -26,7 +26,7 @@ const initialState: CreateVehicleInput = {
   color: "",
 };
 
-// Initial state of the form to create new entry
+// Retrieved state of the form to update entry
 const retrievedState: UpdateVehicleInput = {
   id: "",
   make: "",
@@ -70,8 +70,6 @@ export default function ManageVehicleHome() {
   const [entry, setEntry] = useState<Vehicle[] | CreateVehicleInput[]>([]); // state holding the vehicle data to be created
   const [vehicleID, setVehicleID] = useState({ id: "" }); // state holding vehicle id for update and delete operations
   const [retrievedData, setRetrievedData] = useState<any>({});
-  const [updateState, setUpdateState] =
-    useState<UpdateVehicleInput>(retrievedState);
 
   // function to create a new vehicle entry
   async function addVehicle() {
@@ -103,15 +101,26 @@ export default function ManageVehicleHome() {
     }
   }
 
-  // function to fetch a single vehicle from its ID
-  async function fetchVehicle(id: string) {
+  // function to fetch vehicle by ID
+  async function fetchVehicleByID(id: string) {
     try {
       setIsLoading(true);
       const vehicleData = await client.graphql({
         query: getVehicle,
         variables: { id: id },
       });
-      const vehicle = vehicleData.data.getVehicle;
+      return vehicleData;
+      setIsLoading(false);
+    } catch (error) {
+      console.log("error fetching vehicles");
+    }
+  }
+
+  // function to fetch a single vehicle from its ID
+  async function fetchAndUpdateVehicle(id: string) {
+    try {
+      const vehicleData = await fetchVehicleByID(id);
+      const vehicle = vehicleData?.data?.getVehicle;
       const selectedVehicleData = _.pick(vehicle, [
         "id",
         "make",
@@ -128,11 +137,32 @@ export default function ManageVehicleHome() {
     }
   }
 
+  // function to fetch and delete a single vehicle from its ID
+  async function fetchAndDeleteVehicle(id: string) {
+    try {
+      const vehicleData = await fetchVehicleByID(id);
+      const vehicle = vehicleData?.data?.getVehicle;
+      const selectedVehicleData = _.pick(vehicle, [
+        "id",
+        "make",
+        "model",
+        "year",
+        "color",
+      ]);
+      setRetrievedData({ ...selectedVehicleData });
+      console.log(retrievedData);
+      setIsLoading(false);
+      setVehicleID({ id: "" });
+    } catch (error) {
+      console.log("error fetching vehicles");
+    }
+  }
+
+  // function to update a single vehicle from its ID
   async function updateEntry() {
     try {
-      setIsLoading(true);
-      Object.assign(retrievedState, retrievedData);
-
+      setIsLoading(true); // set loading state
+      Object.assign(retrievedState, retrievedData); // transfer state object to update object
       if (
         !retrievedState.make &&
         !retrievedState.year &&
@@ -144,12 +174,12 @@ export default function ManageVehicleHome() {
         return;
       }
 
-      const data = { ...retrievedState };
+      const data = { ...retrievedState }; // spread update object into data variable
       await client.graphql({
         query: updateVehicle,
         variables: { input: data },
       });
-      setFormState(initialState);
+      setRetrievedData({});
       toast.success("Entry Successfully Updated");
       setIsLoading(false);
     } catch (error) {
@@ -229,7 +259,7 @@ export default function ManageVehicleHome() {
       </Tabs.Panel>
       <Tabs.Panel value="update" pt={rem(10)}>
         <div className="flex flex-col gap-4 justify-center">
-          <label className="flex flex-col">
+          <label className="flex flex-col gap-2">
             <span className="text-sm font-bold">Enter Vehicle ID</span>
             <input
               className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
@@ -243,7 +273,7 @@ export default function ManageVehicleHome() {
 
           <button
             className="bg-teal-700 text-white flex justify-center items-center gap-3 rounded-sm p-2 max-w-32"
-            onClick={() => fetchVehicle(vehicleID?.id)}
+            onClick={() => fetchAndUpdateVehicle(vehicleID?.id)}
           >
             Submit
             {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
@@ -317,7 +347,34 @@ export default function ManageVehicleHome() {
         )}
       </Tabs.Panel>
       <Tabs.Panel value="delete" pt={rem(10)}>
-        Delete Entry
+        <div className="flex flex-col gap-4 justify-center">
+          <label className="flex flex-col gap-2">
+            <span className="text-sm font-bold">Enter Vehicle ID</span>
+            <input
+              className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
+              type="text"
+              onChange={(e) =>
+                setVehicleID({ ...vehicleID, id: e.target.value })
+              }
+              placeholder="Vehicle ID"
+            />
+          </label>
+
+          <button
+            className="bg-teal-700 text-white flex justify-center items-center gap-3 rounded-sm p-2 max-w-32"
+            onClick={() => fetchAndDeleteVehicle(vehicleID?.id)}
+          >
+            Submit
+            {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
+          </button>
+        </div>
+        <Paper shadow="xs" p="xl" mt="lg">
+          <Text>Paper is the most basic ui component</Text>
+          <Text>
+            Use it to create cards, dropdowns, modals and other components that
+            require background with shadow
+          </Text>
+        </Paper>
       </Tabs.Panel>
     </Tabs>
   );
