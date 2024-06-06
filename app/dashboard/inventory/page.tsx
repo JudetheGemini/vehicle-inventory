@@ -29,19 +29,31 @@ export default function InventoryHome() {
 
   const rows = vehicles.map((vehicle) => (
     <Table.Tr key={vehicle.id}>
-      <Table.Td>{vehicle.id}</Table.Td>
-      <Table.Td>{vehicle.make}</Table.Td>
-      <Table.Td>{vehicle.model}</Table.Td>
-      <Table.Td>{vehicle.year}</Table.Td>
-      <Table.Td>{vehicle.color}</Table.Td>
+      <Table.Td className="text-xs md:text-sm font-medium md:font-normal">
+        {vehicle.id}
+      </Table.Td>
+      <Table.Td className="text-xs md:text-sm font-medium md:font-normal">
+        {vehicle.make}
+      </Table.Td>
+      <Table.Td className="text-xs md:text-sm font-medium md:font-normal">
+        {vehicle.model}
+      </Table.Td>
+      <Table.Td className="text-xs md:text-sm font-medium md:font-normal">
+        {vehicle.year}
+      </Table.Td>
+      <Table.Td className="text-xs md:text-sm font-medium md:font-normal">
+        {vehicle.color}
+      </Table.Td>
     </Table.Tr>
   ));
 
   return (
     <div className="flex flex-col items-center py-6 px-4 md:px-6">
       {/* <h1>Inventory Home {vehicles.length} Vehicles</h1> */}
-      <Table horizontalSpacing="sm" verticalSpacing="md" captionSide="top">
-        <Table.Caption>Inventory showing Vehicle Assets</Table.Caption>
+      <Table verticalSpacing="md" captionSide="top">
+        <Table.Caption className="font-medium">
+          Inventory showing Vehicle Assets
+        </Table.Caption>
         <Table.Caption>
           This table is read-only. To perform update or delete operations, copy
           vehicle ID and please navigate to the{" "}
@@ -52,17 +64,15 @@ export default function InventoryHome() {
         </Table.Caption>
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Vehicle ID</Table.Th>
+            <Table.Th>ID</Table.Th>
             <Table.Th>Make</Table.Th>
             <Table.Th>Model</Table.Th>
             <Table.Th>Year</Table.Th>
             <Table.Th>Color</Table.Th>
           </Table.Tr>
         </Table.Thead>
-        <Suspense fallback={<Skeleton height={8} mt={6} />}>
-          {" "}
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Suspense>
+
+        <Table.Tbody>{rows}</Table.Tbody>
       </Table>
     </div>
   );

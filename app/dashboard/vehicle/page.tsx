@@ -1,5 +1,6 @@
 "use client";
-import { Tabs, rem, Loader, Paper, Text } from "@mantine/core";
+import { Tabs, rem, Loader, Paper, Text, Modal } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
 import toast, { Toaster } from "react-hot-toast";
@@ -34,6 +35,7 @@ const retrievedState: UpdateVehicleInput = {
   year: 1999,
   color: "",
 };
+
 const client = generateClient();
 
 // Toast Notifier
@@ -68,8 +70,9 @@ export default function ManageVehicleHome() {
   const [isLoading, setIsLoading] = useState<Boolean>(false); // loading state for submissions
   const [formState, setFormState] = useState<CreateVehicleInput>(initialState); // initial state for create form
   const [entry, setEntry] = useState<Vehicle[] | CreateVehicleInput[]>([]); // state holding the vehicle data to be created
-  const [vehicleID, setVehicleID] = useState({ id: "" }); // state holding vehicle id for update and delete operations
+  const [vehicleID, setVehicleID] = useState<DeleteVehicleInput>({ id: "" }); // state holding vehicle id for update and delete operations
   const [retrievedData, setRetrievedData] = useState<any>({});
+  const [opened, { open, close }] = useDisclosure(false);
 
   // function to create a new vehicle entry
   async function addVehicle() {
@@ -137,11 +140,21 @@ export default function ManageVehicleHome() {
     }
   }
 
+  async function clearState() {
+    setVehicleID({ id: "" });
+    setRetrievedData({});
+  }
+
   // function to fetch and delete a single vehicle from its ID
   async function fetchAndDeleteVehicle(id: string) {
     try {
       const vehicleData = await fetchVehicleByID(id);
       const vehicle = vehicleData?.data?.getVehicle;
+      if (vehicle == null) {
+        setRetrievedData(null);
+        setIsLoading(false);
+        return;
+      }
       const selectedVehicleData = _.pick(vehicle, [
         "id",
         "make",
@@ -152,7 +165,6 @@ export default function ManageVehicleHome() {
       setRetrievedData({ ...selectedVehicleData });
       console.log(retrievedData);
       setIsLoading(false);
-      setVehicleID({ id: "" });
     } catch (error) {
       console.log("error fetching vehicles");
     }
@@ -179,9 +191,30 @@ export default function ManageVehicleHome() {
         query: updateVehicle,
         variables: { input: data },
       });
-      setRetrievedData({});
-      toast.success("Entry Successfully Updated");
+      toast.success("Entry successfully updated");
       setIsLoading(false);
+      setRetrievedData({});
+    } catch (error) {
+      console.log("Error creating entry", error);
+    }
+  }
+
+  async function deleteVehicleFromDB(id: DeleteVehicleInput) {
+    try {
+      setIsLoading(true); // set loading state
+      if (!id) {
+        setIsLoading(false);
+        toast.error("Please enter vehicle ID");
+        return;
+      }
+      await client.graphql({
+        query: deleteVehicle,
+        variables: { input: id },
+      });
+      toast.success("Entry successfully deleted");
+      setIsLoading(false);
+      setVehicleID({ id: "" });
+      setRetrievedData({});
     } catch (error) {
       console.log("Error creating entry", error);
     }
@@ -191,10 +224,13 @@ export default function ManageVehicleHome() {
     <Tabs defaultValue="create" color="teal">
       <Tabs.List>
         <Tabs.Tab value="create">Create Entry</Tabs.Tab>
-        <Tabs.Tab value="update">Update Entry</Tabs.Tab>
-        <Tabs.Tab value="delete">Delete Entry</Tabs.Tab>
+        <Tabs.Tab value="update" onClick={clearState}>
+          Update Entry
+        </Tabs.Tab>
+        <Tabs.Tab value="delete" onClick={clearState}>
+          Delete Entry
+        </Tabs.Tab>
       </Tabs.List>
-
       <Tabs.Panel value="create" className="px-2 md:px-16" pt={rem(16)}>
         <div className="flex flex-col gap-4 justify-center">
           <label className="flex flex-col">
@@ -279,7 +315,7 @@ export default function ManageVehicleHome() {
             {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
           </button>
         </div>
-        {retrievedData.id && (
+        {retrievedData !== null ? (
           <div className="flex flex-col gap-4 justify-center mt-6">
             <label className="flex flex-col">
               <span className="text-sm font-bold">Make</span>
@@ -344,6 +380,8 @@ export default function ManageVehicleHome() {
             </button>
             <Toaster position="top-right" />
           </div>
+        ) : (
+          <p className="text-center">No entry found</p>
         )}
       </Tabs.Panel>
       <Tabs.Panel value="delete" pt={rem(10)}>
@@ -368,13 +406,58 @@ export default function ManageVehicleHome() {
             {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
           </button>
         </div>
-        <Paper shadow="xs" p="xl" mt="lg">
-          <Text>Paper is the most basic ui component</Text>
-          <Text>
-            Use it to create cards, dropdowns, modals and other components that
-            require background with shadow
-          </Text>
-        </Paper>
+        {retrievedData === null ? (
+          <p className="text-center">No entry found</p>
+        ) : null}
+        {retrievedData?.id && (
+          <Paper
+            shadow="xs"
+            p="xl"
+            mt="lg"
+            className="flex flex-col gap-10 space-y-4 relative"
+          >
+            <Text size="lg" fw={600} className="text-base font-bold">
+              Vehicle Details
+            </Text>
+            <Text size="md" fw={500} className="text-base font-semibold">
+              ID: {retrievedData?.id}
+            </Text>
+            <Text size="md" fw={500} className="text-base font-semibold">
+              Make: {retrievedData?.make}
+            </Text>
+            <Text size="md" fw={500} className="text-base font-semibold">
+              Model: {retrievedData?.model}
+            </Text>
+            <Text size="md" fw={500} className="text-base font-semibold">
+              Year: {retrievedData?.year}
+            </Text>
+            <Text size="md" fw={500} className="text-base font-semibold">
+              Color: {retrievedData?.color}
+            </Text>
+            <Modal opened={opened} onClose={close}>
+              <div className="flex flex-col gap-4 items-center">
+                <p className="font-semibold text-base">
+                  Are you sure you want to delete this entry?
+                </p>
+                <button
+                  className="bg-teal-700 text-white p-2 rounded-sm"
+                  onClick={() => {
+                    deleteVehicleFromDB(vehicleID);
+                    close;
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </Modal>
+            <button
+              onClick={open}
+              className="bg-teal-700 absolute right-10 bottom-10 text-white p-2 rounded-sm"
+            >
+              Proceed to delete
+            </button>
+          </Paper>
+        )}
       </Tabs.Panel>
     </Tabs>
   );
