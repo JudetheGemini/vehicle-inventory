@@ -62,9 +62,7 @@ export default function Dashboard() {
       <Text size="lg" fw={700}>
         Welcome to your dashboard {user?.username}
       </Text>
-      <div className="absolute bottom-10 right-10 w-full flex justify-end items-center">
-        <Button variant="filled">Quick Action</Button>
-      </div>
+      <div className="absolute bottom-10 right-10 w-full flex justify-end items-center"></div>
     </div>
   );
 }

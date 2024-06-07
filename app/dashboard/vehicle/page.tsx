@@ -1,10 +1,9 @@
 "use client";
 import { Tabs, rem, Loader, Paper, Text, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { generateClient } from "aws-amplify/api";
 import toast, { Toaster } from "react-hot-toast";
-import { pick } from "lodash";
 import {
   createVehicle,
   updateVehicle,
@@ -39,7 +38,7 @@ const retrievedState: UpdateVehicleInput = {
 const client = generateClient();
 
 // Toast Notifier
-const notify = () =>
+const notify = (data: string) =>
   toast.custom((t) => (
     <div
       className={`${
@@ -49,9 +48,7 @@ const notify = () =>
       <div className="flex-1 w-0 p-4">
         <div className="flex items-start">
           <div className="ml-3 flex-1">
-            <p className="text-sm font-medium text-gray-900">
-              Vehicle Entry Created
-            </p>
+            <p className="text-sm font-medium text-gray-900">{data}</p>
           </div>
         </div>
       </div>
@@ -73,6 +70,8 @@ export default function ManageVehicleHome() {
   const [vehicleID, setVehicleID] = useState<DeleteVehicleInput>({ id: "" }); // state holding vehicle id for update and delete operations
   const [retrievedData, setRetrievedData] = useState<any>({});
   const [opened, { open, close }] = useDisclosure(false);
+  const updateRef = useRef(null);
+  const deleteRef = useRef(null);
 
   // function to create a new vehicle entry
   async function addVehicle() {
@@ -97,7 +96,7 @@ export default function ManageVehicleHome() {
         variables: { input: data },
       });
       setFormState(initialState);
-      notify();
+      notify("Vehicle Entry Created");
       setIsLoading(false);
     } catch (error) {
       console.log("Error creating entry", error);
@@ -140,13 +139,8 @@ export default function ManageVehicleHome() {
     }
   }
 
-  async function clearState() {
-    setVehicleID({ id: "" });
-    setRetrievedData({});
-  }
-
   // function to fetch and delete a single vehicle from its ID
-  async function fetchAndDeleteVehicle(id: string) {
+  async function fetchAndSaveVehicle(id: string) {
     try {
       const vehicleData = await fetchVehicleByID(id);
       const vehicle = vehicleData?.data?.getVehicle;
@@ -170,6 +164,11 @@ export default function ManageVehicleHome() {
     }
   }
 
+  async function clearState() {
+    setVehicleID({ id: "" });
+    setRetrievedData({});
+  }
+
   // function to update a single vehicle from its ID
   async function updateEntry() {
     try {
@@ -191,7 +190,10 @@ export default function ManageVehicleHome() {
         query: updateVehicle,
         variables: { input: data },
       });
-      toast.success("Entry successfully updated");
+      notify("Entry Successfully Updated");
+      if (updateRef.current) {
+        updateRef.current.value = "";
+      }
       setIsLoading(false);
       setRetrievedData({});
     } catch (error) {
@@ -211,7 +213,10 @@ export default function ManageVehicleHome() {
         query: deleteVehicle,
         variables: { input: id },
       });
-      toast.success("Entry successfully deleted");
+      notify("Entry successfully deleted");
+      if (deleteRef.current) {
+        deleteRef.current.value = "";
+      }
       setIsLoading(false);
       setVehicleID({ id: "" });
       setRetrievedData({});
@@ -300,6 +305,7 @@ export default function ManageVehicleHome() {
             <input
               className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
               type="text"
+              ref={updateRef}
               onChange={(e) =>
                 setVehicleID({ ...vehicleID, id: e.target.value })
               }
@@ -309,13 +315,23 @@ export default function ManageVehicleHome() {
 
           <button
             className="bg-teal-700 text-white flex justify-center items-center gap-3 rounded-sm p-2 max-w-32"
-            onClick={() => fetchAndUpdateVehicle(vehicleID?.id)}
+            onClick={() => fetchAndSaveVehicle(vehicleID?.id)}
           >
             Submit
             {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
           </button>
+
+          <Toaster position="top-right" />
         </div>
-        {retrievedData !== null ? (
+        {retrievedData === null ? (
+          <div className="mt-8 flex flex-col gap-6 justify-center">
+            <p className="text-center font-bold text-xl">No entry found</p>
+            <p className="text-center text-gray-500 text-sm">
+              ID may be wrong or entry no longer exists
+            </p>
+          </div>
+        ) : null}
+        {retrievedData?.id && (
           <div className="flex flex-col gap-4 justify-center mt-6">
             <label className="flex flex-col">
               <span className="text-sm font-bold">Make</span>
@@ -380,8 +396,6 @@ export default function ManageVehicleHome() {
             </button>
             <Toaster position="top-right" />
           </div>
-        ) : (
-          <p className="text-center">No entry found</p>
         )}
       </Tabs.Panel>
       <Tabs.Panel value="delete" pt={rem(10)}>
@@ -391,6 +405,7 @@ export default function ManageVehicleHome() {
             <input
               className="border border-gray-400 h-10 p-4 rounded-sm text-black text-base"
               type="text"
+              ref={deleteRef}
               onChange={(e) =>
                 setVehicleID({ ...vehicleID, id: e.target.value })
               }
@@ -400,14 +415,17 @@ export default function ManageVehicleHome() {
 
           <button
             className="bg-teal-700 text-white flex justify-center items-center gap-3 rounded-sm p-2 max-w-32"
-            onClick={() => fetchAndDeleteVehicle(vehicleID?.id)}
+            onClick={() => fetchAndSaveVehicle(vehicleID?.id)}
           >
             Submit
             {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
           </button>
+          <Toaster position="top-right" />
         </div>
         {retrievedData === null ? (
-          <p className="text-center">No entry found</p>
+          <div className="mt-4 flex justify-center">
+            <p className="text-center font-bold text-xl">No entry found</p>
+          </div>
         ) : null}
         {retrievedData?.id && (
           <Paper
