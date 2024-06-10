@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import logo from "../../public/logo.svg";
 import { withAuthenticator, useAuthenticator } from "@aws-amplify/ui-react";
+import { VehicleStoreProvider } from "@/providers/vehicle-store-provider";
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
@@ -83,23 +84,32 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
             >
               Dashboard
             </Button> */}
-            <NavLink href="/dashboard" fw={500} label="Dashboard"></NavLink>
             <NavLink
+              component={Link}
+              href="/dashboard"
+              fw={500}
+              label="Dashboard"
+            ></NavLink>
+            <NavLink
+              component={Link}
               href="#"
               fw={500}
               label="Vehicle Management"
               childrenOffset={28}
             >
               <NavLink
+                component={Link}
                 href="/dashboard/vehicle"
                 label="Manage Vehicles"
               ></NavLink>
               <NavLink
+                component={Link}
                 href="/dashboard/inventory"
                 label="View Inventory"
               ></NavLink>
             </NavLink>
             <NavLink
+              component={Link}
               href="/dashboard/user"
               fw={500}
               label="User Management"
@@ -120,11 +130,13 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
             className="w-full"
           >
             <NavLink
+              component={Link}
               href="/dashboard/settings"
               fw={500}
               label="Settings"
             ></NavLink>
             <NavLink
+              component={Link}
               href="/dashboard/support"
               fw={500}
               label="Help & Support"
@@ -132,7 +144,9 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
             <NavLink onClick={handleLogout} fw={500} label="Logout"></NavLink>
           </Flex>
         </AppShell.Navbar>
-        <AppShell.Main>{children}</AppShell.Main>
+        <AppShell.Main>
+          <VehicleStoreProvider>{children}</VehicleStoreProvider>
+        </AppShell.Main>
       </AppShell>
     </MantineProvider>
   );

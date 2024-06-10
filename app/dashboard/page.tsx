@@ -1,17 +1,44 @@
 "use client";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { generateClient } from "aws-amplify/api";
 import { useRouter } from "next/navigation";
+import { useLoginStore } from "@/utils/zustand";
+import { useVehicleStore } from "@/providers/vehicle-store-provider";
+import { useEffect, useState } from "react";
+import { type Vehicle } from "@/src/API";
+import { listVehicles } from "@/src/graphql/queries";
 
 import { Grid, Card, Text, Divider, Flex, Button, Modal } from "@mantine/core";
+
+const client = generateClient();
 
 export default function Dashboard() {
   const router = useRouter(); // for client-side navigation
   const { user, signOut } = useAuthenticator((context) => [context.user]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const { setTotalVehicles, totalVehicles } = useVehicleStore((state) => state);
+  const testStoreData = useLoginStore((state) => state.test);
 
   const handleLogout = () => {
     signOut();
     router.push("/");
   };
+
+  async function fetchVehicles() {
+    try {
+      const vehicleData = await client.graphql({
+        query: listVehicles,
+      });
+      const vehicles = vehicleData.data.listVehicles.items;
+      setVehicles(vehicles);
+      setTotalVehicles(vehicles.length);
+    } catch (error) {
+      console.log("error fetching vehicles");
+    }
+  }
+  useEffect(() => {
+    fetchVehicles();
+  });
 
   return (
     <div className="gap-2 flex flex-col">
@@ -19,6 +46,7 @@ export default function Dashboard() {
         <Text size="lg" fw={700}>
           Dashboard
         </Text>
+
         <Text fw={600} size="sm">
           Key Metrics
         </Text>
@@ -31,7 +59,7 @@ export default function Dashboard() {
             </Text>
             <Divider my="md" />
             <Text fw={700} fs="24">
-              10
+              {totalVehicles}
             </Text>
           </Card>
         </Grid.Col>

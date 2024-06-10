@@ -4,6 +4,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState, useRef } from "react";
 import { generateClient } from "aws-amplify/api";
 import toast, { Toaster } from "react-hot-toast";
+import { useVehicleStore } from "@/providers/vehicle-store-provider";
 import {
   createVehicle,
   updateVehicle,
@@ -72,6 +73,7 @@ export default function ManageVehicleHome() {
   const [opened, { open, close }] = useDisclosure(false);
   const updateRef = useRef(null);
   const deleteRef = useRef(null);
+  const { setTotalVehicles, totalVehicles } = useVehicleStore((state) => state);
 
   // function to create a new vehicle entry
   async function addVehicle() {
