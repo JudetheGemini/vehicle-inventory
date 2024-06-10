@@ -314,14 +314,15 @@ export default function ManageVehicleHome() {
               placeholder="Vehicle ID"
             />
           </label>
-
-          <button
-            className="bg-teal-700 text-white flex justify-center items-center gap-3 rounded-sm p-2 max-w-32"
-            onClick={() => fetchAndSaveVehicle(vehicleID?.id)}
-          >
-            Submit
-            {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
-          </button>
+          {!retrievedData?.id && (
+            <button
+              className="bg-teal-700 text-white flex justify-center items-center gap-3 rounded-sm p-2 max-w-32"
+              onClick={() => fetchAndSaveVehicle(vehicleID?.id)}
+            >
+              Submit
+              {isLoading && <Loader color="rgba(255, 255, 255, 1)" size={15} />}
+            </button>
+          )}
 
           <Toaster position="top-right" />
         </div>
