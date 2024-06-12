@@ -7,13 +7,12 @@ import { Table, Skeleton } from "@mantine/core";
 import { type Vehicle } from "@/src/API";
 import Link from "next/link";
 import { useVehicleStore } from "@/providers/vehicle-store-provider";
-// import fetchVehicles from "@/utils/fetch-vehicles";
 
 const client = generateClient();
 
 export default function InventoryHome() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const { setTotalVehicles, totalVehicles } = useVehicleStore((state) => state);
+  // const { setTotalVehicles, totalVehicles } = useVehicleStore((state) => state);
 
   async function fetchVehicles() {
     try {
@@ -22,19 +21,14 @@ export default function InventoryHome() {
       });
       const vehicles = vehicleData.data.listVehicles.items;
       setVehicles(vehicles);
-      updateState();
     } catch (error) {
       console.log("error fetching vehicles");
     }
   }
 
-  const updateState = () => {
-    setTotalVehicles(vehicles.length);
-  };
-
   useEffect(() => {
     fetchVehicles();
-  });
+  }, []);
 
   const rows = vehicles.map((vehicle) => (
     <Table.Tr key={vehicle.id}>

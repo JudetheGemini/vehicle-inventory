@@ -24,7 +24,9 @@ export default function Dashboard() {
     router.push("/");
   };
 
-  async function fetchVehicles() {
+  type EffectCallback = () => Promise<void>;
+
+  const fetchVehicles: EffectCallback = async () => {
     try {
       const vehicleData = await client.graphql({
         query: listVehicles,
@@ -35,10 +37,10 @@ export default function Dashboard() {
     } catch (error) {
       console.log("error fetching vehicles");
     }
-  }
+  };
   useEffect(() => {
     fetchVehicles();
-  });
+  }, []);
 
   return (
     <div className="gap-2 flex flex-col">

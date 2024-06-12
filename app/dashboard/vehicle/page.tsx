@@ -71,8 +71,8 @@ export default function ManageVehicleHome() {
   const [vehicleID, setVehicleID] = useState<DeleteVehicleInput>({ id: "" }); // state holding vehicle id for update and delete operations
   const [retrievedData, setRetrievedData] = useState<any>({});
   const [opened, { open, close }] = useDisclosure(false);
-  const updateRef = useRef(null);
-  const deleteRef = useRef(null);
+  const updateRef = useRef<HTMLInputElement>(null as HTMLInputElement | null);
+  const deleteRef = useRef<HTMLInputElement>(null as HTMLInputElement | null);
   const { setTotalVehicles, totalVehicles } = useVehicleStore((state) => state);
 
   // function to create a new vehicle entry
