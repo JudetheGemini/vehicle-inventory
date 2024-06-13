@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { Suspense } from "react";
 import { type Vehicle } from "@/src/API";
 import { listVehicles } from "@/src/graphql/queries";
-
 import { Grid, Card, Text, Divider, Flex, Skeleton } from "@mantine/core";
 import RecentsTable from "../ui/dashboard/table";
 import SummaryCard from "../ui/dashboard/summary-card";
@@ -19,8 +18,8 @@ export default function Dashboard() {
   const router = useRouter(); // for client-side navigation
   const { user, signOut } = useAuthenticator((context) => [context.user]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [fetching, setFetching] = useState(true);
   const { setTotalVehicles, totalVehicles } = useVehicleStore((state) => state);
-  const testStoreData = useLoginStore((state) => state.test);
   const sortedCars = [...vehicles].sort((a, b) => {
     return Date.parse(b.createdAt) - Date.parse(a.createdAt);
   });
@@ -42,6 +41,7 @@ export default function Dashboard() {
       const vehicles = vehicleData.data.listVehicles.items;
       setVehicles(vehicles);
       setTotalVehicles(vehicles.length);
+      setFetching(false);
     } catch (error) {
       console.log("error fetching vehicles");
     }
@@ -63,7 +63,9 @@ export default function Dashboard() {
       </Flex>
       <Grid grow>
         <Grid.Col span={3}>
-          <SummaryCard description="Total Vehicles" value={totalVehicles} />
+          <Skeleton visible={fetching}>
+            <SummaryCard description="Total Vehicles" value={totalVehicles} />
+          </Skeleton>
         </Grid.Col>
         <Grid.Col span={3}>
           <SummaryCard description="Last Activity" value={0} />
@@ -94,9 +96,15 @@ export default function Dashboard() {
               Recent Additions
             </Text>
             <Divider my="md" />
-            <Suspense fallback={<Skeleton height={150} />}>
-              <RecentsTable sortedVehicles={slicedSortedCars} />
-            </Suspense>
+
+            <Skeleton visible={fetching}>
+              {vehicles.length === 0 && <Text>No vehicles found</Text>}
+              {vehicles.length > 0 && (
+                <RecentsTable sortedVehicles={slicedSortedCars} />
+              )}
+            </Skeleton>
+
+            {/* <RecentsTable sortedVehicles={slicedSortedCars} /> */}
           </Card>
         </Grid.Col>
       </Grid>

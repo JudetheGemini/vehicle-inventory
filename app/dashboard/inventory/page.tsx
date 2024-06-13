@@ -12,7 +12,7 @@ const client = generateClient();
 
 export default function InventoryHome() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  // const { setTotalVehicles, totalVehicles } = useVehicleStore((state) => state);
+  const [fetching, setFetching] = useState(true);
 
   async function fetchVehicles() {
     try {
@@ -21,6 +21,7 @@ export default function InventoryHome() {
       });
       const vehicles = vehicleData.data.listVehicles.items;
       setVehicles(vehicles);
+      setFetching(false);
     } catch (error) {
       console.log("error fetching vehicles");
     }
