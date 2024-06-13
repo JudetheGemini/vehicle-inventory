@@ -6,6 +6,7 @@ frontend:
         - npm ci
     build:
       commands:
+        - echo $_EXPORTS > ./src/aws-exports.js
         - npm run build
   artifacts:
     baseDirectory: out
