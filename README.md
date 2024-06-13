@@ -8,7 +8,6 @@ The Vehicle Inventory Management System is a web application designed to help au
 
 - **User Authentication**: Secure login and user management handled by AWS Cognito.
 - **Vehicle Management**: Authorized users can add, view, update, and delete vehicles from the inventory.
-- **Image Upload**: Users can upload pictures of the vehicles along with other important information.
 - **Responsive UI**: A clean and intuitive interface built with React and Mantine UI.
 - **Serverless Architecture**: Backend operations are managed by AWS Lambda functions.
 - **API Gateway**: AWS API Gateway handles API requests and triggers Lambda functions.
@@ -21,4 +20,4 @@ The Vehicle Inventory Management System is a web application designed to help au
 - **Backend**: AWS Amplify, AWS API Gateway, AWS DynamoDB, AWS Cognito
 - **State Management**: Zustand
 - **Hosting**: AWS Amplify
-- **Image Storage**: AWS S3
+
