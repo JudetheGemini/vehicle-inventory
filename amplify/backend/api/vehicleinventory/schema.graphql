@@ -9,7 +9,7 @@ input AMPLIFY {
 # private authorization applies the authorization rule to every signed-in user
 # add this later @auth(rules: [{ allow: private }])
 # @auth(rules: [{ allow: private }])
-type Vehicle @model git{
+type Vehicle @model {
   id: ID!
   make: String!
   model: String!

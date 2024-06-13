@@ -86,6 +86,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
             </Button> */}
             <NavLink
               component={Link}
+              onClick={toggle}
               href="/dashboard"
               fw={500}
               label="Dashboard"
@@ -100,11 +101,13 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
               <NavLink
                 component={Link}
                 href="/dashboard/vehicle"
+                onClick={toggle}
                 label="Manage Vehicles"
               ></NavLink>
               <NavLink
                 component={Link}
                 href="/dashboard/inventory"
+                onClick={toggle}
                 label="View Inventory"
               ></NavLink>
             </NavLink>
@@ -112,6 +115,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
               component={Link}
               href="/dashboard/user"
               fw={500}
+              onClick={toggle}
               label="User Management"
             ></NavLink>
             <NavLink
@@ -132,12 +136,14 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
             <NavLink
               component={Link}
               href="/dashboard/settings"
+              onClick={toggle}
               fw={500}
               label="Settings"
             ></NavLink>
             <NavLink
               component={Link}
               href="/dashboard/support"
+              onClick={toggle}
               fw={500}
               label="Help & Support"
             ></NavLink>
