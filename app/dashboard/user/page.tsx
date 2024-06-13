@@ -1,7 +1,7 @@
 export default function ManageUserHome() {
-    return (
-        <div>
-            <h1>Manage User Home</h1>
-        </div>
-    )
+  return (
+    <div>
+      <h1>....Coming soon</h1>
+    </div>
+  );
 }

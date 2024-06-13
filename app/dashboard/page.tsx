@@ -5,19 +5,13 @@ import { useRouter } from "next/navigation";
 import { useLoginStore } from "@/utils/zustand";
 import { useVehicleStore } from "@/providers/vehicle-store-provider";
 import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { type Vehicle } from "@/src/API";
 import { listVehicles } from "@/src/graphql/queries";
 
-import {
-  Grid,
-  Card,
-  Text,
-  Divider,
-  Flex,
-  Button,
-  Modal,
-  Table,
-} from "@mantine/core";
+import { Grid, Card, Text, Divider, Flex, Skeleton } from "@mantine/core";
+import RecentsTable from "../ui/dashboard/table";
+import SummaryCard from "../ui/dashboard/summary-card";
 
 const client = generateClient();
 
@@ -32,23 +26,6 @@ export default function Dashboard() {
   });
 
   const slicedSortedCars = sortedCars.slice(0, 5);
-
-  function timeAgo(createdAt: string) {
-    const currentTime: number = Date.now();
-    const createdTime: number = Date.parse(createdAt);
-    const diffInMs = currentTime - createdTime;
-    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    if (diffInDays >= 1) {
-      return `${diffInDays} day(s) ago`;
-    } else if (diffInHours >= 1) {
-      return `${diffInHours} hour(s) ago`;
-    } else if (diffInMinutes >= 1) {
-      return `${diffInMinutes} minutes ago`;
-    } else return "Just now";
-  }
 
   const handleLogout = () => {
     signOut();
@@ -86,37 +63,13 @@ export default function Dashboard() {
       </Flex>
       <Grid grow>
         <Grid.Col span={3}>
-          <Card withBorder>
-            <Text fw={700} fs="12">
-              Total Vehicles
-            </Text>
-            <Divider my="md" />
-            <Text fw={700} fs="24">
-              {totalVehicles}
-            </Text>
-          </Card>
+          <SummaryCard description="Total Vehicles" value={totalVehicles} />
         </Grid.Col>
         <Grid.Col span={3}>
-          <Card withBorder>
-            <Text fw={700} fs="12">
-              Last Activity
-            </Text>
-            <Divider my="md" />
-            <Text fw={700} fs="24">
-              10
-            </Text>
-          </Card>
+          <SummaryCard description="Last Activity" value={0} />
         </Grid.Col>
         <Grid.Col span={3}>
-          <Card withBorder>
-            <Text fw={700} fs="12">
-              Total Users
-            </Text>
-            <Divider my="md" />
-            <Text fw={700} fs="24">
-              10
-            </Text>
-          </Card>
+          <SummaryCard description="Total Users" value={0} />
         </Grid.Col>
       </Grid>
       <Divider my="lg" />
@@ -141,36 +94,9 @@ export default function Dashboard() {
               Recent Additions
             </Text>
             <Divider my="md" />
-            {/* <Text fw={700} fs="24">
-              <ul>
-                {sortedCars.map((vehicle) => (
-                  <li className="list-disc" key={vehicle.id}>
-                    <Text fw={500}>
-                      {vehicle.make} {vehicle.model} -{" "}
-                      {new Date(vehicle.createdAt).toDateString()}
-                    </Text>
-                  </li>
-                ))}
-              </ul>
-            </Text> */}
-            <Table verticalSpacing="md">
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Car</Table.Th>
-                  <Table.Th>Time Period</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {slicedSortedCars.map((vehicle) => (
-                  <Table.Tr key={vehicle.id}>
-                    <Table.Td>
-                      {vehicle.make} {vehicle.model}
-                    </Table.Td>
-                    <Table.Td>{timeAgo(vehicle.createdAt)}</Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+            <Suspense fallback={<Skeleton height={150} />}>
+              <RecentsTable sortedVehicles={slicedSortedCars} />
+            </Suspense>
           </Card>
         </Grid.Col>
       </Grid>
