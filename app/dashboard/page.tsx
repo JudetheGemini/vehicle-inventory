@@ -33,6 +33,23 @@ export default function Dashboard() {
 
   const slicedSortedCars = sortedCars.slice(0, 5);
 
+  function timeAgo(createdAt: string) {
+    const currentTime: number = Date.now();
+    const createdTime: number = Date.parse(createdAt);
+    const diffInMs = currentTime - createdTime;
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    if (diffInDays >= 1) {
+      return `${diffInDays} day(s) ago`;
+    } else if (diffInHours >= 1) {
+      return `${diffInHours} hour(s) ago`;
+    } else if (diffInMinutes >= 1) {
+      return `${diffInMinutes} minutes ago`;
+    } else return "Just now";
+  }
+
   const handleLogout = () => {
     signOut();
     router.push("/");
@@ -140,7 +157,7 @@ export default function Dashboard() {
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th>Car</Table.Th>
-                  <Table.Th>Added On</Table.Th>
+                  <Table.Th>Time Period</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -149,9 +166,7 @@ export default function Dashboard() {
                     <Table.Td>
                       {vehicle.make} {vehicle.model}
                     </Table.Td>
-                    <Table.Td>
-                      {new Date(vehicle.createdAt).toDateString()}
-                    </Table.Td>
+                    <Table.Td>{timeAgo(vehicle.createdAt)}</Table.Td>
                   </Table.Tr>
                 ))}
               </Table.Tbody>
