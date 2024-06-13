@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
-import awsmobile from "../src/aws-exports";
+import awsmobile from "@/src/aws-exports";
 import { ColorSchemeScript } from "@mantine/core";
 Amplify.configure(awsmobile);
 
