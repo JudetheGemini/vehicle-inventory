@@ -53,30 +53,32 @@ export default function InventoryHome() {
 
   return (
     <div className="flex flex-col items-center py-6 px-4 md:px-6">
-      <Table verticalSpacing="md" captionSide="top">
-        <Table.Caption className="font-medium">
-          Inventory showing Vehicle Assets
-        </Table.Caption>
-        <Table.Caption>
-          This table is read-only. To perform update or delete operations, copy
-          vehicle ID and please navigate to the{" "}
-          <Link href="/dashboard/vehicle" className="text-blue-600">
-            Manage Vehicles
-          </Link>{" "}
-          page
-        </Table.Caption>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>ID</Table.Th>
-            <Table.Th>Make</Table.Th>
-            <Table.Th>Model</Table.Th>
-            <Table.Th>Year</Table.Th>
-            <Table.Th>Color</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
+      <Skeleton visible={fetching}>
+        <Table verticalSpacing="md" captionSide="top">
+          <Table.Caption className="font-medium">
+            Inventory showing Vehicle Assets
+          </Table.Caption>
+          <Table.Caption>
+            This table is read-only. To perform update or delete operations,
+            copy vehicle ID and please navigate to the{" "}
+            <Link href="/dashboard/vehicle" className="text-blue-600">
+              Manage Vehicles
+            </Link>{" "}
+            page
+          </Table.Caption>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>ID</Table.Th>
+              <Table.Th>Make</Table.Th>
+              <Table.Th>Model</Table.Th>
+              <Table.Th>Year</Table.Th>
+              <Table.Th>Color</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
 
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </Skeleton>
     </div>
   );
 }

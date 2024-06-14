@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import logo from "../../public/logo.svg";
 import { withAuthenticator, useAuthenticator } from "@aws-amplify/ui-react";
 import { VehicleStoreProvider } from "@/providers/vehicle-store-provider";
+import "@mantine/charts/styles.css";
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();

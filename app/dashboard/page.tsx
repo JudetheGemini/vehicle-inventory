@@ -11,6 +11,7 @@ import { listVehicles } from "@/src/graphql/queries";
 import { Grid, Card, Text, Divider, Flex, Skeleton } from "@mantine/core";
 import RecentsTable from "../ui/dashboard/table";
 import SummaryCard from "../ui/dashboard/summary-card";
+import { BarChart } from "@mantine/charts";
 
 const client = generateClient();
 
@@ -25,6 +26,59 @@ export default function Dashboard() {
   });
 
   const slicedSortedCars = sortedCars.slice(0, 5);
+
+  // create a new type for this
+  const timeOfCreation = vehicles.map((vehicle) => {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const monthIndex = new Date(vehicle.createdAt).getMonth();
+    return {
+      id: vehicle.id,
+      month: months[monthIndex],
+      year: new Date(vehicle.createdAt).getFullYear(),
+    };
+  });
+
+  const vehicleCountByMonth = new Map();
+
+  timeOfCreation.forEach((vehicle) => {
+    const key = `${vehicle.month}-${vehicle.year}`;
+    if (vehicleCountByMonth.has(key)) {
+      vehicleCountByMonth.set(key, vehicleCountByMonth.get(key) + 1);
+    } else {
+      vehicleCountByMonth.set(key, 1);
+    }
+  });
+
+  const vehicleCountArray = Array.from(vehicleCountByMonth.entries()).map(
+    ([key, value]) => ({
+      month: key.split("-")[0],
+      year: key.split("-")[1],
+      Cars: value,
+    })
+  );
+
+  vehicleCountArray.push(
+    { month: "July", year: "2023", Cars: 0 },
+    { month: "August", year: "2023", Cars: 0 },
+    { month: "September", year: "2023", Cars: 0 }
+  );
+
+  console.log(timeOfCreation);
+  console.log(vehicleCountArray);
 
   const handleLogout = () => {
     signOut();
@@ -81,13 +135,15 @@ export default function Dashboard() {
       <Grid grow>
         <Grid.Col span={6}>
           <Card withBorder>
-            <Text fw={700} fs="12">
-              Total Vehicles
-            </Text>
-            <Divider my="md" />
-            <Text fw={700} fs="24">
-              {totalVehicles}
-            </Text>
+            <Skeleton visible={fetching}>
+              <BarChart
+                h={400}
+                data={vehicleCountArray}
+                series={[{ name: "Cars", color: "teal" }]}
+                dataKey="month"
+                tickLine="y"
+              />
+            </Skeleton>
           </Card>
         </Grid.Col>
         <Grid.Col span={6}>
@@ -103,8 +159,6 @@ export default function Dashboard() {
                 <RecentsTable sortedVehicles={slicedSortedCars} />
               )}
             </Skeleton>
-
-            {/* <RecentsTable sortedVehicles={slicedSortedCars} /> */}
           </Card>
         </Grid.Col>
       </Grid>
