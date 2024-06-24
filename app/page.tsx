@@ -129,7 +129,9 @@ export default function Home() {
                 Get started
               </a>
               <a
-                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://github.com/JudetheGemini/vehicle-inventory/blob/master/README.md"
                 className="text-sm font-semibold leading-6 text-gray-900"
               >
                 Learn more <span aria-hidden="true">→</span>

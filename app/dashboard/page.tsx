@@ -2,10 +2,8 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { generateClient } from "aws-amplify/api";
 import { useRouter } from "next/navigation";
-import { useLoginStore } from "@/utils/zustand";
 import { useVehicleStore } from "@/providers/vehicle-store-provider";
 import { useEffect, useState } from "react";
-import { Suspense } from "react";
 import { type Vehicle } from "@/src/API";
 import { listVehicles } from "@/src/graphql/queries";
 import { Grid, Card, Text, Divider, Flex, Skeleton } from "@mantine/core";
@@ -27,7 +25,7 @@ export default function Dashboard() {
 
   const slicedSortedCars = sortedCars.slice(0, 5);
 
-  // create a new type for this
+  // array holding months each vehicle was created
   const timeOfCreation = vehicles.map((vehicle) => {
     const months = [
       "January",
@@ -106,7 +104,7 @@ export default function Dashboard() {
 
   return (
     <div className="gap-2 flex flex-col">
-      <Flex justify="center" gap="lg" direction="column">
+      <Flex justify="between" gap="lg" direction="column">
         <Text size="lg" fw={700}>
           Dashboard
         </Text>
@@ -116,16 +114,13 @@ export default function Dashboard() {
         </Text>
       </Flex>
       <Grid grow>
-        <Grid.Col span={3}>
+        <Grid.Col span={4}>
           <Skeleton visible={fetching}>
             <SummaryCard description="Total Vehicles" value={totalVehicles} />
           </Skeleton>
         </Grid.Col>
-        <Grid.Col span={3}>
-          <SummaryCard description="Last Activity" value={0} />
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <SummaryCard description="Total Users" value={0} />
+        <Grid.Col span={4}>
+          <SummaryCard description="Last Login" value={0} />
         </Grid.Col>
       </Grid>
       <Divider my="lg" />
@@ -139,6 +134,8 @@ export default function Dashboard() {
               <BarChart
                 h={400}
                 data={vehicleCountArray}
+                xAxisLabel="Month"
+                yAxisLabel="Amount of Car Entries"
                 series={[{ name: "Cars", color: "teal" }]}
                 dataKey="month"
                 tickLine="y"
@@ -162,7 +159,6 @@ export default function Dashboard() {
           </Card>
         </Grid.Col>
       </Grid>
-      <div className="absolute bottom-10 right-10 w-full flex justify-end items-center"></div>
     </div>
   );
 }

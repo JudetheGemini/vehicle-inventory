@@ -1,13 +1,10 @@
 "use client";
 import { generateClient } from "aws-amplify/api";
-import { Suspense } from "react";
 import { listVehicles } from "@/src/graphql/queries";
 import { useState, useEffect } from "react";
 import { Table, Skeleton } from "@mantine/core";
 import { type Vehicle } from "@/src/API";
 import Link from "next/link";
-import { useVehicleStore } from "@/providers/vehicle-store-provider";
-
 const client = generateClient();
 
 export default function InventoryHome() {

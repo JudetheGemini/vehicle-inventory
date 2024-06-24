@@ -102,6 +102,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
               <NavLink
                 component={Link}
                 href="/dashboard/vehicle"
+                color="teal"
                 onClick={toggle}
                 label="Manage Vehicles"
               ></NavLink>
